@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+		    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	    <link rel="stylesheet" type="text/css" href="styles.css">
+
+		<link rel="stylesheet" href="css/leaflet-sidebar.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.label/0.2.1/leaflet.label.css" />
+
+		    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Optional: Bootstrap theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap-theme.min.css">
+   
+        <!-- <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css"> -->
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+		body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .lorem {
+            font-style: italic;
+            text-align: justify;
+            color: #AAA;
+        }
+		
+		<!--Style for SQL window-->
+
+		.sidebar {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			background-color: rgba(255, 255, 255, 0.6);
+			padding: 10px;
+			border-top: 1px solid #ccc;
+			box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+			z-index: 1000;
+			width: 20%;
+		}
+
+
+        <!-- #map { -->
+            <!-- position: absolute; -->
+            <!-- top: 0; -->
+            <!-- left: 0; -->
+            <!-- width: 100%; -->
+            <!-- height: 100%; -->
+            <!-- z-index: 0; -->
+        <!-- } -->
+        .info-window {
+            position: absolute;
+            top: 350px;
+            left: 20px;
+            background-color: white;
+            padding: 10px;
+            border: 0px solid #ffffff;
+            box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .dropdown-container {
+            margin-right: 10px;
+        }
+		
+		.container {
+		padding: 10px;
+		background-color: rgba(255, 255, 255, 0.8);
+		border-top: 1px solid #ccc;
+		box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+		width: 100%;
+		}
+
+		.dropdown-container {
+			margin-bottom: 10px;
+		}
+
+		#zoomButton {
+			margin-top: 10px;
+		}
+
+		
+		<!--End SQL Window query-->
+		
+        </style>
+        <title></title>
+    </head>
+    <body>
+	
+	   <div id="sidebar" class="leaflet-sidebar collapsed">
+	   
+
+        <!-- nav tabs -->
+        <div class="leaflet-sidebar-tabs">
+            <!-- top aligned tabs -->
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
+
+            </ul>
+
+        </div>
+
+        <!-- panel content -->
+        <div class="leaflet-sidebar-content">
+		
+	
+            <div class="leaflet-sidebar-pane" id="home">
+                <h1 class="leaflet-sidebar-header">
+                    Layers
+                    <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+			<!--Sidebar panel details-->
+			<div class="container">
+            <div class="dropdown-container">
+                <label for="districtDropdown">Select District:</label>
+                <select id="districtDropdown" class="form-control" onchange="filterTalukas()">
+                    <!-- Dropdown options will be populated dynamically using JavaScript -->
+                </select>
+            </div>
+            <div class="dropdown-container">
+                <label for="talukaDropdown">Select Taluka:</label>
+                <select id="talukaDropdown" class="form-control" onchange="filterWaterbody()">
+                    <!-- Dropdown options will be populated dynamically using JavaScript -->
+                </select>
+            </div>
+			 <div class="dropdown-container">
+                <label for="WaterbodyDropdown">Select Waterbody Type:</label>
+                <select id="WaterbodyDropdown" class="form-control">
+                    <!-- Dropdown options will be populated dynamically using JavaScript -->
+                </select>
+            </div>
+            <button id="zoomButton" class="btn btn-primary">Display Info</button>
+            <!-- Use Bootstrap alert component for info window -->
+
+        </div>
+						<hr style="height:2px;border-width:0;color:gray;background-color:gray">					   
+					   <div id="infoWindow" class="alert alert-info info-window" role="alert">
+                <!-- Information will be displayed here -->
+            </div>
+			<!--End Sidebar panel details-->
+                </div>
+        </div>
+
+		
+    </div>
+	
+	
+	
+        <div id="map"></div>
+		
+		<!--Adding SQL Query Fun-->
+    <!-- <div class="sidebar" id="sidebar"> -->
+
+        <!-- <div class="container"> -->
+            <!-- <div class="dropdown-container"> -->
+                <!-- <label for="districtDropdown">Select District:</label> -->
+                <!-- <select id="districtDropdown" class="form-control" onchange="filterTalukas()"> -->
+                    <!-- Dropdown options will be populated dynamically using JavaScript -->
+                <!-- </select> -->
+            <!-- </div> -->
+            <!-- <div class="dropdown-container"> -->
+                <!-- <label for="talukaDropdown">Select Taluka:</label> -->
+                <!-- <select id="talukaDropdown" class="form-control"> -->
+                    <!-- Dropdown options will be populated dynamically using JavaScript -->
+                <!-- </select> -->
+            <!-- </div> -->
+            <!-- <button id="zoomButton" class="btn btn-primary">Display Info</button> -->
+            <!-- Use Bootstrap alert component for info window -->
+
+        <!-- </div> -->
+    <!-- </div> -->
+
+		<!--Ending SQL Query-->
+        <script src="js/qgis2web_expressions.js"></script>         <script src="js/leaflet.js"></script>         <script src="js/leaflet.rotatedMarker.js"></script>         <script src="js/leaflet.pattern.js"></script>         <script src="js/leaflet-hash.js"></script>         <script src="js/Autolinker.min.js"></script>         <script src="js/rbush.min.js"></script>         <script src="js/labelgun.min.js"></script>         <script src="js/labels.js"></script> 		<script src="js/leaflet-sidebar.js"></script>         <script src="data/District_1.js"></script> 		<script src="data/Taluka_1.js"></script> 		<script src="data/Waterbody4_0.js"></script> 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<!-- <script src="js/script1.js"></script> -->
+		<script>
+
+    window.addEventListener('contextmenu', function (e) {         e.preventDefault();     });       document.addEventListener('selectstart', function (e) {         e.preventDefault();     });
+</script>
+
+        <script>
+		
+
+		var selectedWaterbodyLayer;
+		
+var highlightedLayer; // Variable to hold the highlighted layer
+
+function highlightFeature(e) {     if (highlightedLayer) {          resetHighlight(highlightedLayer);     }      highlightedLayer = e.target;      if (e.target.feature.geometry.type === 'LineString') {         highlightedLayer.setStyle({             color: '#ffff00',         });     } else {         highlightedLayer.setStyle({             fillColor: '#ffff00',             fillOpacity: 1         });     } }
+
+function resetHighlight(layer) {      if (layer.feature.geometry.type === 'LineString') {         layer.setStyle({             color: 'rgba(224,46,46,1.0)',         });     } else {         layer.setStyle({             fillColor: 'rgba(231,113,72,0.0)',             fillOpacity: 1         });     } }
+
+function hideOtherLayers(selectedLayer) {
+
+    map.eachLayer(function(layer) {         if (layer !== selectedLayer) {             map.removeLayer(layer);         }     }); } 	
+		
+		
+
+var districtDropdown = document.getElementById("districtDropdown"); var talukaDropdown = document.getElementById("talukaDropdown"); var WaterbodyDropdown = document.getElementById("WaterbodyDropdown");
+
+
+json_District_1.features.forEach(function(feature) {     var districtName = feature.properties.Dis_Name;     var option = document.createElement("option");     option.value = districtName;     option.text = districtName;     districtDropdown.appendChild(option); });
+
+
+function filterTalukas() {
+    var selectedDistrict = districtDropdown.value;
+
+    // Clear existing options
+    talukaDropdown.innerHTML = "";      json_Taluka_1.features.forEach(function(feature) {         if (feature.properties.Dis_Name === selectedDistrict) {             var talukaName = feature.properties.Talu_Name;             var option = document.createElement("option");             option.value = talukaName;             option.text = talukaName;             talukaDropdown.appendChild(option);         }     }); }
+
+ function filterWaterbody() {     var selectedTaluka = talukaDropdown.value;
+
+    WaterbodyDropdown.innerHTML = "";      json_Waterbody4_0.features.forEach(function(feature) {         if (feature.properties.Talu_Name === selectedTaluka) {             var WaterbodyName = feature.properties.Name;                        var option = document.createElement("option");             option.value = WaterbodyName;             option.text = WaterbodyName;             WaterbodyDropdown.appendChild(option);         }     }); }
+
+
+	zoomButton.addEventListener("click", function() {     var selectedDistrict = districtDropdown.value;     var selectedTaluka = talukaDropdown.value;    	var selectedWaterbody = WaterbodyDropdown.value;
+     var districtFeature = json_District_1.features.find(function(feature) {         return feature.properties.Dis_Name === selectedDistrict;     });      var talukaFeature = json_Taluka_1.features.find(function(feature) {         return feature.properties.Talu_Name === selectedTaluka;     }); 	    var waterbodyFeature = json_Waterbody4_0.features.find(function(feature) {         return feature.properties.Name === selectedWaterbody;      });
+
+
+    var bounds = L.latLngBounds(         L.geoJSON(districtFeature).getBounds(),         L.geoJSON(talukaFeature).getBounds(), 		L.geoJSON(waterbodyFeature).getBounds()     );
+
+
+    if (selectedWaterbodyLayer) {         resetHighlight(selectedWaterbodyLayer);     }
+
+    selectedWaterbodyLayer = layer_Waterbody4_0.getLayers().find(function(layer) {         return layer.feature.properties.Name === selectedWaterbody;     });
+
+
+    selectedWaterbodyLayer.setStyle({         fillColor: '#6eff66',         fillOpacity: 1     });
+
+
+    hideOtherLayers(layer_Taluka_1);     hideOtherLayers(layer_District_1); 	hideOtherLayers(layer_Waterbody4_0);     map.addLayer(layer_District_1);     map.addLayer(layer_Taluka_1); 	map.addLayer(layer_Waterbody4_0);
+
+    map.fitBounds(bounds);
+
+
+    var infoWindow = document.getElementById("infoWindow");     infoWindow.innerHTML =  '<h3><em>Parcel Information</em></h3>'+ 							'<p><strong>District:</strong> ' + selectedDistrict + '</p>' +                             '<p><strong>Taluka:</strong> ' + selectedTaluka + '</p>' + 							'<p><strong>Type of Waterbody:</strong> ' + selectedWaterbody + '</p>' + 							'<p><strong>Owner:</strong> ' + (waterbodyFeature.properties.Owner !== null ? waterbodyFeature.properties.Owner : 'N/A') + '</p>' + 							'<p><strong>Area:</strong> ' + (waterbodyFeature.properties.Area !== null ? waterbodyFeature.properties.Area : 'N/A') + '</p>' +                             '<hr>' +                             '<p>This is a Dummy information. Only for practices</p>';
+
+    infoWindow.style.display = "block";
+
+ 
+    setTimeout(function() {
+        infoWindow.style.display = "none";
+    }, 10000); 
+});
+
+<!-- function filterTalukas() { -->   <!-- var selectedDistrict = districtDropdown.value; -->    <!-- // Clear the existing taluka dropdown options -->   <!-- talukaDropdown.innerHTML = ""; -->    <!-- json_Taluka_1.features.forEach(function(feature) { -->     <!-- if (feature.properties.Dis_Name === selectedDistrict) { -->       <!-- var talukaName = feature.properties.Talu_Name; -->       <!-- var option = document.createElement("option"); -->       <!-- option.value = talukaName; -->       <!-- option.text = talukaName; -->       <!-- talukaDropdown.appendChild(option); -->     <!-- } -->   <!-- }); --> <!-- } -->  <!--End SQL main query function-->			 	 		 		
+		
+        var map = L.map('map', {             zoomControl:true, maxZoom:28, minZoom:1         }).fitBounds([[19.480336888492502,67.63290254112819],[25.307485938094153,75.11311089299807]]);         var hash = new L.Hash(map);         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});         var bounds_group = new L.featureGroup([]);         function setBounds() {         }
+        map.createPane('pane_EsriSatellite_0');         map.getPane('pane_EsriSatellite_0').style.zIndex = 400;         var layer_EsriSatellite_0 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {             pane: 'pane_EsriSatellite_0',             opacity: 1,             attribution: '',             minZoom: 1,             maxZoom: 28,             minNativeZoom: 0,             maxNativeZoom: 17         });         layer_EsriSatellite_0;         map.addLayer(layer_EsriSatellite_0);
+		
+		<!--Adding Layer-1-->
+        function pop_District_1(feature, layer) {             var popupContent = '<table>\                     <tr>\                         <td colspan="2">' + (feature.properties['Dis_Name'] !== null ? autolinker.link(feature.properties['Dis_Name'].toLocaleString()) : '') + '</td>\                     </tr>\                 </table>';             layer.bindPopup(popupContent, {maxHeight: 400});         }
+
+        function style_District_1_0() {             return {                 pane: 'pane_District_1',                 opacity: 1,                 color: 'rgba(0,0,0,1.0)',                 dashArray: '',                 lineCap: 'butt',                 lineJoin: 'miter',                 weight: 2.0,                 fill: true,                 fillOpacity: 1,                 fillColor: 'rgba(190,178,151,0.1)',                 interactive: false,             }         }
+        map.createPane('pane_District_1');
+        map.getPane('pane_District_1').style.zIndex = 401;
+        map.getPane('pane_District_1').style['mix-blend-mode'] = 'normal';
+        var layer_District_1 = new L.geoJson(json_District_1, {             attribution: '',             interactive: false,             dataVar: 'json_District_1',             layerName: 'layer_District_1',             pane: 'pane_District_1',             onEachFeature: pop_District_1,             style: style_District_1_0,         });
+        bounds_group.addLayer(layer_District_1);
+        map.addLayer(layer_District_1);
+		<!-- setBounds(); -->
+        <!-- var i = 0; -->
+        <!-- layer_District_1.eachLayer(function(layer) { -->
+            <!-- var context = { -->
+                <!-- feature: layer.feature, -->
+                <!-- variables: {} -->
+            <!-- }; -->
+            <!-- layer.bindTooltip((layer.feature.properties['Dis_Name'] !== null?String('<div style="color: #000000; font-size: 7pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['Dis_Name']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_District_1'}); -->
+            <!-- labels.push(layer); -->
+            <!-- totalMarkers += 1; -->
+              <!-- layer.added = true; -->
+              <!-- addLabel(layer, i); -->
+              <!-- i++; -->
+        <!-- }); -->
+        <!-- resetLabels([layer_District_1]); -->
+        <!-- map.on("zoomend", function(){ -->
+            <!-- resetLabels([layer_District_1]); -->
+        <!-- }); -->
+        <!-- map.on("layeradd", function(){ -->
+            <!-- resetLabels([layer_District_1]); -->
+        <!-- }); -->
+        <!-- map.on("layerremove", function(){ -->
+            <!-- resetLabels([layer_District_1]); -->
+        <!-- }); -->
+				<!--Ending Layer-1-->
+				<!--Adding Layer-2-->
+		     function pop_Taluka_1(feature, layer) {
+            var popupContent = '<table>\                     <tr>\                         <td colspan="2">' + (feature.properties['Dis_Name'] !== null ? autolinker.link(feature.properties['Dis_Name'].toLocaleString()) : '') + '</td>\                     </tr>\                     <tr>\                         <td colspan="2">' + (feature.properties['Talu_Name'] !== null ? autolinker.link(feature.properties['Talu_Name'].toLocaleString()) : '') + '</td>\                 </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Taluka_1_0() {             return {                 pane: 'pane_Taluka_1',                 opacity: 0.5,                 color: 'rgba(225,0,0,1.0)',                 dashArray: '',                 lineCap: 'butt',                 lineJoin: 'miter',                 weight: 0.7,                 fill: true,                 fillOpacity: 1,                 fillColor: 'rgba(190,178,151,0.0)',                 interactive: false,             }         }
+        map.createPane('pane_Taluka_1');         map.getPane('pane_Taluka_1').style.zIndex = 401;         map.getPane('pane_Taluka_1').style['mix-blend-mode'] = 'normal';         var layer_Taluka_1 = new L.geoJson(json_Taluka_1, {             attribution: '',             interactive: true,             dataVar: 'json_Taluka_1',             layerName: 'layer_Taluka_1',             pane: 'pane_Taluka_1',             onEachFeature: pop_Taluka_1,             style: style_Taluka_1_0,         });         bounds_group.addLayer(layer_Taluka_1);         map.addLayer(layer_Taluka_1);
+		<!--Ending Layer-2-->	
+		
+		<!--Adding Layer-3-->
+		
+		 function pop_Waterbody4_0(feature, layer) {             var popupContent = '<table>\                     <tr>\                         <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\                     </tr>\                     <tr>\                         <td colspan="2">' + (feature.properties['Dis_Name'] !== null ? autolinker.link(feature.properties['Dis_Name'].toLocaleString()) : '') + '</td>\                     </tr>\                     <tr>\                         <td colspan="2">' + (feature.properties['Talu_Name'] !== null ? autolinker.link(feature.properties['Talu_Name'].toLocaleString()) : '') + '</td>\                     </tr>\                     <tr>\                         <td colspan="2">' + (feature.properties['Owner'] !== null ? autolinker.link(feature.properties['Owner'].toLocaleString()) : '') + '</td>\                     </tr>\                     <tr>\                         <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\                     </tr>\                     <tr>\                         <td colspan="2">' + (feature.properties['Area'] !== null ? autolinker.link(feature.properties['Area'].toLocaleString()) : '') + '</td>\                     </tr>\                 </table>';             layer.bindPopup(popupContent, {maxHeight: 400});         }          function style_Waterbody4_0_0() {             return {                 pane: 'pane_Waterbody4_0',                 opacity: 1,                 color: 'rgba(35,35,35,1.0)',                 dashArray: '',                 lineCap: 'butt',                 lineJoin: 'miter',                 weight: 1.0,                 fill: true,                 fillOpacity: 1,                 fillColor: 'rgba(164,243,248,0.2)',                 interactive: false,             }         }         map.createPane('pane_Waterbody4_0');         map.getPane('pane_Waterbody4_0').style.zIndex = 400;         map.getPane('pane_Waterbody4_0').style['mix-blend-mode'] = 'normal';         var layer_Waterbody4_0 = new L.geoJson(json_Waterbody4_0, {             attribution: '',             interactive: true,             dataVar: 'json_Waterbody4_0',             layerName: 'layer_Waterbody4_0',             pane: 'pane_Waterbody4_0',             onEachFeature: pop_Waterbody4_0,             style: style_Waterbody4_0_0,         });         bounds_group.addLayer(layer_Waterbody4_0);
+        <!-- map.addLayer(layer_Waterbody4_0); -->
+		
+		<!--Ending Layer-3-->
+					
+					
+					
+        var baseMaps = {}; 		        <!-- L.control.layers(baseMaps,{'<img src="legend/District_1.png" /> District': layer_District_1,'<img src="legend/Taluka_1.png" /> Taluka': layer_Taluka_1,'<img src="legend/Waterbody4_0.png" /> Waterbody': layer_Waterbody4_0,"Esri Satellite": layer_EsriSatellite_0,}).addTo(map); -->         L.control.layers(baseMaps,{"Satellite View": layer_EsriSatellite_0,}).addTo(map);         setBounds();
+		
+	        // create the sidebar instance and add it to the map
+        var sidebar = L.control.sidebar({ container: 'sidebar' })             .addTo(map)             <!-- .open('home');	 -->
+			
+			
+			
+		
+			
+        </script>
+    </body>
+</html>
