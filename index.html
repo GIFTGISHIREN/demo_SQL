@@ -59,6 +59,7 @@ function resetHighlight(layer) {      if (layer.feature.geometry.type === 'LineS
 	        
         var sidebar = L.control.sidebar({ container: 'sidebar' })
             .addTo(map)
+	            .open('home');	
  
         sidebar
             .addPanel({                 id:   'js-api',                 tab:  '<i class="fa fa-gear"></i>',                 title: 'Tools',             })
